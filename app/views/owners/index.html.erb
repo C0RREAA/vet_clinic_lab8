@@ -1,0 +1,21 @@
+<h1 class="mb-4">Owners</h1>
+<table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Phone</th>
+      <th>Pets</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @owners.each do |owner| %>
+      <tr>
+        <td><%= link_to "#{owner.first_name} #{owner.last_name}", owner_path(owner) %></td>
+        <td><%= owner.email %></td>
+        <td><%= owner.phone %></td>
+        <td><%= owner.pets.count %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

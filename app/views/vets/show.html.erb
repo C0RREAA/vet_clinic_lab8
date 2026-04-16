@@ -1,0 +1,27 @@
+<%= link_to "← Back to Vets", vets_path, class: "btn btn-secondary mb-3" %>
+<h1 class="mb-4">Dr. <%= @vet.first_name %> <%= @vet.last_name %></h1>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <p><strong>Email:</strong> <%= @vet.email %></p>
+    <p><strong>Phone:</strong> <%= @vet.phone %></p>
+    <p><strong>Specialization:</strong> <%= @vet.specialization %></p>
+  </div>
+</div>
+
+<h4>Appointments</h4>
+<table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr><th>Date</th><th>Pet</th><th>Reason</th><th>Status</th></tr>
+  </thead>
+  <tbody>
+    <% @vet.appointments.each do |appt| %>
+      <tr>
+        <td><%= link_to appt.date.strftime("%B %d, %Y %H:%M"), appointment_path(appt) %></td>
+        <td><%= link_to appt.pet.name, pet_path(appt.pet) %></td>
+        <td><%= appt.reason %></td>
+        <td><%= ["Scheduled", "In Progress", "Completed", "Cancelled"][appt.status] %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

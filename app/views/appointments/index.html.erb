@@ -1,0 +1,26 @@
+<h1 class="mb-4">Appointments</h1>
+<table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th>Date</th>
+      <th>Pet</th>
+      <th>Vet</th>
+      <th>Reason</th>
+      <th>Status</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @appointments.each do |appt| %>
+      <tr>
+        <td><%= link_to appt.date.strftime("%B %d, %Y %H:%M"), appointment_path(appt) %></td>
+        <td><%= link_to appt.pet.name, pet_path(appt.pet) %></td>
+        <td><%= link_to "#{appt.vet.first_name} #{appt.vet.last_name}", vet_path(appt.vet) %></td>
+        <td><%= appt.reason %></td>
+        <td>
+          <% statuses = { 0 => ["Scheduled", "primary"], 1 => ["In Progress", "warning"], 2 => ["Completed", "success"], 3 => ["Cancelled", "danger"] } %>
+          <span class="badge bg-<%= statuses[appt.status][1] %>"><%= statuses[appt.status][0] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

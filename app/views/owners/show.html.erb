@@ -1,0 +1,26 @@
+<%= link_to "← Back to Owners", owners_path, class: "btn btn-secondary mb-3" %>
+<h1 class="mb-4"><%= @owner.first_name %> <%= @owner.last_name %></h1>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <p><strong>Email:</strong> <%= @owner.email %></p>
+    <p><strong>Phone:</strong> <%= @owner.phone %></p>
+    <p><strong>Address:</strong> <%= @owner.address %></p>
+  </div>
+</div>
+
+<h4>Pets</h4>
+<table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr><th>Name</th><th>Species</th><th>Breed</th></tr>
+  </thead>
+  <tbody>
+    <% @owner.pets.each do |pet| %>
+      <tr>
+        <td><%= link_to pet.name, pet_path(pet) %></td>
+        <td><%= pet.species %></td>
+        <td><%= pet.breed %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

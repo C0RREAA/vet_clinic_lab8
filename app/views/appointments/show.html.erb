@@ -1,0 +1,37 @@
+<%= link_to "← Back to Appointments", appointments_path, class: "btn btn-secondary mb-3" %>
+<h1 class="mb-4">Appointment — <%= @appointment.date.strftime("%B %d, %Y") %></h1>
+
+<div class="card shadow-sm mb-4">
+  <div class="card-body">
+    <p><strong>Date:</strong> <%= @appointment.date.strftime("%B %d, %Y %H:%M") %></p>
+    <p><strong>Reason:</strong> <%= @appointment.reason %></p>
+    <p><strong>Status:</strong>
+      <% statuses = { 0 => ["Scheduled", "primary"], 1 => ["In Progress", "warning"], 2 => ["Completed", "success"], 3 => ["Cancelled", "danger"] } %>
+      <span class="badge bg-<%= statuses[@appointment.status][1] %>"><%= statuses[@appointment.status][0] %></span>
+    </p>
+    <p><strong>Pet:</strong> <%= link_to @appointment.pet.name, pet_path(@appointment.pet) %></p>
+    <p><strong>Vet:</strong> <%= link_to "#{@appointment.vet.first_name} #{@appointment.vet.last_name}", vet_path(@appointment.vet) %></p>
+  </div>
+</div>
+
+<h4>Treatments</h4>
+<% if @appointment.treatments.any? %>
+  <table class="table table-bordered table-hover">
+    <thead class="table-dark">
+      <tr><th>Name</th><th>Medication</th><th>Dosage</th><th>Administered At</th><th>Notes</th></tr>
+    </thead>
+    <tbody>
+      <% @appointment.treatments.each do |t| %>
+        <tr>
+          <td><%= t.name %></td>
+          <td><%= t.medication %></td>
+          <td><%= t.dosage %></td>
+          <td><%= t.administered_at.strftime("%B %d, %Y %H:%M") %></td>
+          <td><%= t.notes %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-muted">No treatments recorded for this appointment.</p>
+<% end %>

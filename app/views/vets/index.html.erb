@@ -1,0 +1,19 @@
+<h1 class="mb-4">Vets</h1>
+<table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th>Name</th>
+      <th>Email</th>
+      <th>Specialization</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @vets.each do |vet| %>
+      <tr>
+        <td><%= link_to "#{vet.first_name} #{vet.last_name}", vet_path(vet) %></td>
+        <td><%= vet.email %></td>
+        <td><%= vet.specialization %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

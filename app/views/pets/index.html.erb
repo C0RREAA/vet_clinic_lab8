@@ -1,0 +1,23 @@
+<h1 class="mb-4">Pets</h1>
+<table class="table table-bordered table-hover">
+  <thead class="table-dark">
+    <tr>
+      <th>Name</th>
+      <th>Species</th>
+      <th>Breed</th>
+      <th>Owner</th>
+      <th>Date of Birth</th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @pets.each do |pet| %>
+      <tr>
+        <td><%= link_to pet.name, pet_path(pet) %></td>
+        <td><%= pet.species %></td>
+        <td><%= pet.breed %></td>
+        <td><%= link_to "#{pet.owner.first_name} #{pet.owner.last_name}", owner_path(pet.owner) %></td>
+        <td><%= pet.date_of_birth.strftime("%B %d, %Y") %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
