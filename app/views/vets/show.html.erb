@@ -9,19 +9,47 @@
   </div>
 </div>
 
-<h4>Appointments</h4>
-<table class="table table-bordered table-hover">
-  <thead class="table-dark">
-    <tr><th>Date</th><th>Pet</th><th>Reason</th><th>Status</th></tr>
-  </thead>
-  <tbody>
-    <% @vet.appointments.each do |appt| %>
-      <tr>
-        <td><%= link_to appt.date.strftime("%B %d, %Y %H:%M"), appointment_path(appt) %></td>
-        <td><%= link_to appt.pet.name, pet_path(appt.pet) %></td>
-        <td><%= appt.reason %></td>
-        <td><%= ["Scheduled", "In Progress", "Completed", "Cancelled"][appt.status] %></td>
-      </tr>
-    <% end %>
-  </tbody>
-</table>
+<h4>Upcoming Appointments</h4>
+<% if @upcoming.any? %>
+  <table class="table table-bordered table-hover mb-4">
+    <thead class="table-dark">
+      <tr><th>Date</th><th>Pet</th><th>Reason</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <% @upcoming.each do |appt| %>
+        <tr>
+          <td><%= link_to appt.date.strftime("%B %d, %Y %H:%M"), appointment_path(appt) %></td>
+          <td><%= link_to appt.pet.name, pet_path(appt.pet) %></td>
+          <td><%= appt.reason %></td>
+          <td><span class="badge bg-primary"><%= appt.status.humanize %></span></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-muted mb-4">No upcoming appointments.</p>
+<% end %>
+
+<h4>Past Appointments</h4>
+<% if @past.any? %>
+  <table class="table table-bordered table-hover">
+    <thead class="table-dark">
+      <tr><th>Date</th><th>Pet</th><th>Reason</th><th>Status</th></tr>
+    </thead>
+    <tbody>
+      <% @past.each do |appt| %>
+        <tr>
+          <td><%= link_to appt.date.strftime("%B %d, %Y %H:%M"), appointment_path(appt) %></td>
+          <td><%= link_to appt.pet.name, pet_path(appt.pet) %></td>
+          <td><%= appt.reason %></td>
+          <td>
+            <% color = { "completed" => "success", "cancelled" => "danger", "in_progress" => "warning" }[appt.status] || "secondary" %>
+            <span class="badge bg-<%= color %>"><%= appt.status.humanize %></span>
+          </td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+<% else %>
+  <p class="text-muted">No past appointments.</p>
+<% end %>

@@ -6,11 +6,12 @@
     <p><strong>Date:</strong> <%= @appointment.date.strftime("%B %d, %Y %H:%M") %></p>
     <p><strong>Reason:</strong> <%= @appointment.reason %></p>
     <p><strong>Status:</strong>
-      <% statuses = { 0 => ["Scheduled", "primary"], 1 => ["In Progress", "warning"], 2 => ["Completed", "success"], 3 => ["Cancelled", "danger"] } %>
-      <span class="badge bg-<%= statuses[@appointment.status][1] %>"><%= statuses[@appointment.status][0] %></span>
+      <% statuses = { "scheduled" => ["Scheduled", "primary"], "in_progress" => ["In Progress", "warning"], "completed" => ["Completed", "success"], "cancelled" => ["Cancelled", "danger"] } %>
+      <% s = statuses[@appointment.status] || ["Unknown", "secondary"] %>
+      <span class="badge bg-<%= s[1] %>"><%= s[0] %></span>
     </p>
-    <p><strong>Pet:</strong> <%= link_to @appointment.pet.name, pet_path(@appointment.pet) %></p>
-    <p><strong>Vet:</strong> <%= link_to "#{@appointment.vet.first_name} #{@appointment.vet.last_name}", vet_path(@appointment.vet) %></p>
+    <p><strong>Pet:</strong> <%= @appointment.pet ? link_to(@appointment.pet.name, pet_path(@appointment.pet)) : "-" %></p>
+    <p><strong>Vet:</strong> <%= @appointment.vet ? link_to("#{@appointment.vet.first_name} #{@appointment.vet.last_name}", vet_path(@appointment.vet)) : "-" %></p>
   </div>
 </div>
 

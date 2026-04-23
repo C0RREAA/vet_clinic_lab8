@@ -1,9 +1,9 @@
 class OwnersController < ApplicationController
   def index
-    @owners = Owner.all
+    @owners = Owner.includes(:pets).all
   end
 
   def show
-    @owner = Owner.find(params[:id])
+    @owner = Owner.includes(pets: :appointments).find(params[:id])
   end
 end

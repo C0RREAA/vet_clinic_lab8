@@ -13,12 +13,13 @@
     <% @appointments.each do |appt| %>
       <tr>
         <td><%= link_to appt.date.strftime("%B %d, %Y %H:%M"), appointment_path(appt) %></td>
-        <td><%= link_to appt.pet.name, pet_path(appt.pet) %></td>
-        <td><%= link_to "#{appt.vet.first_name} #{appt.vet.last_name}", vet_path(appt.vet) %></td>
+        <td><%= appt.pet ? link_to(appt.pet.name, pet_path(appt.pet)) : "-" %></td>
+        <td><%= appt.vet ? link_to("#{appt.vet.first_name} #{appt.vet.last_name}", vet_path(appt.vet)) : "-" %></td>
         <td><%= appt.reason %></td>
         <td>
-          <% statuses = { 0 => ["Scheduled", "primary"], 1 => ["In Progress", "warning"], 2 => ["Completed", "success"], 3 => ["Cancelled", "danger"] } %>
-          <span class="badge bg-<%= statuses[appt.status][1] %>"><%= statuses[appt.status][0] %></span>
+          <% statuses = { "scheduled" => ["Scheduled", "primary"], "in_progress" => ["In Progress", "warning"], "completed" => ["Completed", "success"], "cancelled" => ["Cancelled", "danger"] } %>
+          <% s = statuses[appt.status] || ["Unknown", "secondary"] %>
+          <span class="badge bg-<%= s[1] %>"><%= s[0] %></span>
         </td>
       </tr>
     <% end %>
