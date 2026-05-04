@@ -1,5 +1,9 @@
-<h1 class="mb-4">Appointments</h1>
-<table class="table table-bordered table-hover">
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="m-0">Appointments</h1>
+  <%= link_to "New Appointment", new_appointment_path, class: "btn btn-primary" %>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
   <thead class="table-dark">
     <tr>
       <th>Date</th>
@@ -7,6 +11,7 @@
       <th>Vet</th>
       <th>Reason</th>
       <th>Status</th>
+      <th class="text-end">Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -20,6 +25,14 @@
           <% statuses = { "scheduled" => ["Scheduled", "primary"], "in_progress" => ["In Progress", "warning"], "completed" => ["Completed", "success"], "cancelled" => ["Cancelled", "danger"] } %>
           <% s = statuses[appt.status] || ["Unknown", "secondary"] %>
           <span class="badge bg-<%= s[1] %>"><%= s[0] %></span>
+        </td>
+        <td class="text-end">
+          <%= link_to "Edit", edit_appointment_path(appt), class: "btn btn-sm btn-outline-secondary" %>
+          <%= button_to "Delete", appointment_path(appt),
+                        method: :delete,
+                        class: "btn btn-sm btn-outline-danger d-inline",
+                        form: { class: "d-inline" },
+                        data: { turbo_confirm: "Are you sure?" } %>
         </td>
       </tr>
     <% end %>

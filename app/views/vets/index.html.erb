@@ -1,10 +1,15 @@
-<h1 class="mb-4">Vets</h1>
-<table class="table table-bordered table-hover">
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="m-0">Vets</h1>
+  <%= link_to "New Vet", new_vet_path, class: "btn btn-primary" %>
+</div>
+
+<table class="table table-bordered table-hover align-middle">
   <thead class="table-dark">
     <tr>
       <th>Name</th>
       <th>Email</th>
       <th>Specialization</th>
+      <th class="text-end">Actions</th>
     </tr>
   </thead>
   <tbody>
@@ -13,6 +18,14 @@
         <td><%= link_to "#{vet.first_name} #{vet.last_name}", vet_path(vet) %></td>
         <td><%= vet.email %></td>
         <td><%= vet.specialization %></td>
+        <td class="text-end">
+          <%= link_to "Edit", edit_vet_path(vet), class: "btn btn-sm btn-outline-secondary" %>
+          <%= button_to "Delete", vet_path(vet),
+                        method: :delete,
+                        class: "btn btn-sm btn-outline-danger d-inline",
+                        form: { class: "d-inline" },
+                        data: { turbo_confirm: "Are you sure?" } %>
+        </td>
       </tr>
     <% end %>
   </tbody>

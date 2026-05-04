@@ -1,5 +1,16 @@
 <%= link_to "← Back to Appointments", appointments_path, class: "btn btn-secondary mb-3" %>
-<h1 class="mb-4">Appointment — <%= @appointment.date.strftime("%B %d, %Y") %></h1>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="m-0">Appointment — <%= @appointment.date.strftime("%B %d, %Y") %></h1>
+  <div class="d-flex gap-2">
+    <%= link_to "Edit", edit_appointment_path(@appointment), class: "btn btn-outline-secondary" %>
+    <%= button_to "Delete", appointment_path(@appointment),
+                  method: :delete,
+                  class: "btn btn-outline-danger",
+                  form: { class: "d-inline" },
+                  data: { turbo_confirm: "Are you sure?" } %>
+  </div>
+</div>
 
 <div class="card shadow-sm mb-4">
   <div class="card-body">
@@ -15,11 +26,22 @@
   </div>
 </div>
 
-<h4>Treatments</h4>
+<div class="d-flex justify-content-between align-items-center mb-3">
+  <h4 class="m-0">Treatments</h4>
+  <%= link_to "New Treatment", new_appointment_treatment_path(@appointment), class: "btn btn-primary btn-sm" %>
+</div>
+
 <% if @appointment.treatments.any? %>
-  <table class="table table-bordered table-hover">
+  <table class="table table-bordered table-hover align-middle">
     <thead class="table-dark">
-      <tr><th>Name</th><th>Medication</th><th>Dosage</th><th>Administered At</th><th>Notes</th></tr>
+      <tr>
+        <th>Name</th>
+        <th>Medication</th>
+        <th>Dosage</th>
+        <th>Administered At</th>
+        <th>Notes</th>
+        <th class="text-end">Actions</th>
+      </tr>
     </thead>
     <tbody>
       <% @appointment.treatments.each do |t| %>
@@ -29,6 +51,14 @@
           <td><%= t.dosage %></td>
           <td><%= t.administered_at.strftime("%B %d, %Y %H:%M") %></td>
           <td><%= t.notes %></td>
+          <td class="text-end">
+            <%= link_to "Edit", edit_appointment_treatment_path(@appointment, t), class: "btn btn-sm btn-outline-secondary" %>
+            <%= button_to "Delete", appointment_treatment_path(@appointment, t),
+                          method: :delete,
+                          class: "btn btn-sm btn-outline-danger d-inline",
+                          form: { class: "d-inline" },
+                          data: { turbo_confirm: "Are you sure?" } %>
+          </td>
         </tr>
       <% end %>
     </tbody>

@@ -1,5 +1,16 @@
 <%= link_to "← Back to Vets", vets_path, class: "btn btn-secondary mb-3" %>
-<h1 class="mb-4">Dr. <%= @vet.first_name %> <%= @vet.last_name %></h1>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="m-0">Dr. <%= @vet.first_name %> <%= @vet.last_name %></h1>
+  <div class="d-flex gap-2">
+    <%= link_to "Edit", edit_vet_path(@vet), class: "btn btn-outline-secondary" %>
+    <%= button_to "Delete", vet_path(@vet),
+                  method: :delete,
+                  class: "btn btn-outline-danger",
+                  form: { class: "d-inline" },
+                  data: { turbo_confirm: "Are you sure?" } %>
+  </div>
+</div>
 
 <div class="card shadow-sm mb-4">
   <div class="card-body">

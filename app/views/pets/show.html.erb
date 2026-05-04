@@ -1,5 +1,16 @@
 <%= link_to "← Back to Pets", pets_path, class: "btn btn-secondary mb-3" %>
-<h1 class="mb-4"><%= @pet.name %></h1>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="m-0"><%= @pet.name %></h1>
+  <div class="d-flex gap-2">
+    <%= link_to "Edit", edit_pet_path(@pet), class: "btn btn-outline-secondary" %>
+    <%= button_to "Delete", pet_path(@pet),
+                  method: :delete,
+                  class: "btn btn-outline-danger",
+                  form: { class: "d-inline" },
+                  data: { turbo_confirm: "Are you sure?" } %>
+  </div>
+</div>
 
 <div class="card shadow-sm mb-4">
   <div class="card-body">
@@ -21,7 +32,7 @@
       <tr>
         <td><%= link_to appt.date.strftime("%B %d, %Y %H:%M"), appointment_path(appt) %></td>
         <td><%= appt.reason %></td>
-        <td><%= ["Scheduled", "In Progress", "Completed", "Cancelled"][appt.status] %></td>
+        <td><%= appt.status.to_s.humanize %></td>
       </tr>
     <% end %>
   </tbody>

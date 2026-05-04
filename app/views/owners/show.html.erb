@@ -1,5 +1,16 @@
 <%= link_to "← Back to Owners", owners_path, class: "btn btn-secondary mb-3" %>
-<h1 class="mb-4"><%= @owner.first_name %> <%= @owner.last_name %></h1>
+
+<div class="d-flex justify-content-between align-items-center mb-4">
+  <h1 class="m-0"><%= @owner.first_name %> <%= @owner.last_name %></h1>
+  <div class="d-flex gap-2">
+    <%= link_to "Edit", edit_owner_path(@owner), class: "btn btn-outline-secondary" %>
+    <%= button_to "Delete", owner_path(@owner),
+                  method: :delete,
+                  class: "btn btn-outline-danger",
+                  form: { class: "d-inline" },
+                  data: { turbo_confirm: "Are you sure?" } %>
+  </div>
+</div>
 
 <div class="card shadow-sm mb-4">
   <div class="card-body">

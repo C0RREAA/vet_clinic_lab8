@@ -1,0 +1,4 @@
+<%= link_to "← Back to Appointment", appointment_path(@appointment), class: "btn btn-secondary mb-3" %>
+<h1 class="mb-4">Edit Treatment</h1>
+
+<%= render "form", appointment: @appointment, treatment: @treatment %>
