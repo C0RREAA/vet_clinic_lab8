@@ -1,3 +1,12 @@
+# Wipe existing data so this file is idempotent.
+Treatment.destroy_all
+Appointment.destroy_all
+Pet.destroy_all
+Owner.destroy_all
+Vet.destroy_all
+
+PHOTO_DIR = Rails.root.join("db", "seeds", "pets")
+
 # ── Owners ──────────────────────────────────────────────
 ana = Owner.create!(
   first_name: "Ana",
@@ -40,7 +49,18 @@ dra_lopez = Vet.create!(
   specialization: "Cirugía"
 )
 
-# ── Pets ─────────────────────────────────────────────────
+# ── Pets (with photos) ───────────────────────────────────
+def attach_photo(pet, filename)
+  path = PHOTO_DIR.join(filename)
+  return unless File.exist?(path)
+
+  pet.photo.attach(
+    io:           File.open(path),
+    filename:     filename,
+    content_type: "image/jpeg"
+  )
+end
+
 firulais = ana.pets.create!(
   name:          "Firulais",
   species:       "dog",
@@ -48,6 +68,7 @@ firulais = ana.pets.create!(
   date_of_birth: "2019-03-15",
   weight:        28.5
 )
+attach_photo(firulais, "dog1.jpg")
 
 michi = ana.pets.create!(
   name:          "Michi",
@@ -56,6 +77,7 @@ michi = ana.pets.create!(
   date_of_birth: "2021-07-20",
   weight:        4.2
 )
+attach_photo(michi, "cat1.jpg")
 
 rex = carlos.pets.create!(
   name:          "Rex",
@@ -64,6 +86,7 @@ rex = carlos.pets.create!(
   date_of_birth: "2018-11-05",
   weight:        35.0
 )
+attach_photo(rex, "dog2.jpg")
 
 bunny = carlos.pets.create!(
   name:          "Bunny",
@@ -72,6 +95,7 @@ bunny = carlos.pets.create!(
   date_of_birth: "2022-01-10",
   weight:        2.1
 )
+# Bunny has no photo on purpose, to exercise the placeholder branch.
 
 luna = lucia.pets.create!(
   name:          "Luna",
@@ -80,6 +104,17 @@ luna = lucia.pets.create!(
   date_of_birth: "2020-05-30",
   weight:        3.8
 )
+attach_photo(luna, "cat2.jpg")
+
+# An extra pet that gets the third dog photo.
+toby = lucia.pets.create!(
+  name:          "Toby",
+  species:       "dog",
+  breed:         "Beagle",
+  date_of_birth: "2023-02-14",
+  weight:        12.0
+)
+attach_photo(toby, "dog3.jpg")
 
 # ── Appointments ─────────────────────────────────────────
 a1 = Appointment.create!(
@@ -117,45 +152,89 @@ a5 = Appointment.create!(
   status: :cancelled
 )
 
-# ── Treatments ───────────────────────────────────────────
+# ── Treatments (with rich-text clinical notes) ───────────
 a1.treatments.create!(
   name:            "Vacuna antirrábica",
   medication:      "Rabisin",
   dosage:          "1 ml IM",
-  notes:           "Sin reacciones adversas. Próxima dosis en 12 meses.",
-  administered_at: "2024-11-10 10:30:00"
+  administered_at: "2024-11-10 10:30:00",
+  clinical_notes:  <<~HTML
+    <h2>Diagnosis</h2>
+    <p>Annual rabies vaccination, no complications.</p>
+    <h3>Observations</h3>
+    <ul>
+      <li><strong>Temperature:</strong> 38.5 °C (within normal range)</li>
+      <li><strong>Heart rate:</strong> 90 bpm</li>
+      <li><strong>Reaction:</strong> none observed during 15-minute monitoring window</li>
+    </ul>
+    <p><em>Next dose due in 12 months.</em></p>
+  HTML
 )
 
 a1.treatments.create!(
   name:            "Desparasitación",
   medication:      "Drontal Plus",
   dosage:          "1 comprimido",
-  notes:           "Administrado sin inconvenientes.",
-  administered_at: "2024-11-10 10:45:00"
+  administered_at: "2024-11-10 10:45:00",
+  clinical_notes:  <<~HTML
+    <h2>Treatment</h2>
+    <p>Oral broad-spectrum antiparasitic administered without incident.</p>
+    <ul>
+      <li><strong>Targets:</strong> roundworm, hookworm, tapeworm</li>
+      <li><strong>Schedule:</strong> repeat every 3 months</li>
+    </ul>
+  HTML
 )
 
 a2.treatments.create!(
   name:            "Castración",
   medication:      "Propofol + Isoflurano",
   dosage:          "Según peso corporal",
-  notes:           "Cirugía sin complicaciones. Recuperación normal.",
-  administered_at: "2024-12-05 12:00:00"
+  administered_at: "2024-12-05 12:00:00",
+  clinical_notes:  <<~HTML
+    <h2>Surgical report</h2>
+    <p>Routine feline neuter procedure completed successfully.</p>
+    <h3>Post-op plan</h3>
+    <ul>
+      <li><strong>Day 1-3:</strong> indoor rest, cone collar at all times</li>
+      <li><strong>Day 7:</strong> incision check</li>
+      <li><strong>Pain control:</strong> meloxicam 0.05 mg/kg PO once daily for 3 days</li>
+    </ul>
+  HTML
 )
 
 a3.treatments.create!(
   name:            "Antiinflamatorio",
   medication:      "Meloxicam",
   dosage:          "0.1 mg/kg",
-  notes:           "Dolor moderado en cadera derecha. Seguimiento en 2 semanas.",
-  administered_at: "2025-01-15 09:30:00"
+  administered_at: "2025-01-15 09:30:00",
+  clinical_notes:  <<~HTML
+    <h2>Findings</h2>
+    <p>Moderate stiffness in <strong>right hip</strong>; lameness noted on physical exam.</p>
+    <h3>Next steps</h3>
+    <ul>
+      <li>Re-evaluate in <strong>2 weeks</strong></li>
+      <li>Consider joint supplements (glucosamine + chondroitin)</li>
+      <li>Encourage low-impact exercise</li>
+    </ul>
+  HTML
 )
 
 a3.treatments.create!(
   name:            "Radiografía",
   medication:      "N/A",
   dosage:          "N/A",
-  notes:           "Displasia leve de cadera. Se recomienda dieta baja en calorías.",
-  administered_at: "2025-01-15 09:15:00"
+  administered_at: "2025-01-15 09:15:00",
+  clinical_notes:  <<~HTML
+    <h2>Imaging report</h2>
+    <p>Mild <strong>hip dysplasia</strong> visible on lateral and ventro-dorsal projections.</p>
+    <ul>
+      <li>Femoral head subluxation: minimal</li>
+      <li>Joint space: slightly reduced bilaterally</li>
+      <li>Recommendation: weight management, low-calorie diet</li>
+    </ul>
+  HTML
 )
 
 puts "✅ Seed completado: #{Owner.count} owners, #{Pet.count} pets, #{Vet.count} vets, #{Appointment.count} appointments, #{Treatment.count} treatments"
+puts "🖼  Photos attached: #{Pet.joins(:photo_attachment).count}/#{Pet.count}"

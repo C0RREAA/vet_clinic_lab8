@@ -17,7 +17,7 @@ class TreatmentsControllerTest < ActionDispatch::IntegrationTest
                                    medication: "Amoxicillin",
                                    dosage: "10mg",
                                    administered_at: Time.now,
-                                   notes: "After lunch")
+                                   clinical_notes: "<p>After lunch</p>")
   end
 
   test "should get new" do
@@ -29,7 +29,7 @@ class TreatmentsControllerTest < ActionDispatch::IntegrationTest
     assert_difference("Treatment.count", 1) do
       post appointment_treatments_url(@appointment), params: { treatment: {
         name: "Vaccine", medication: "Rabies",
-        dosage: "1ml", administered_at: Time.now.iso8601, notes: ""
+        dosage: "1ml", administered_at: Time.now.iso8601, clinical_notes: "<p>Routine</p>"
       } }
     end
     assert_redirected_to appointment_url(@appointment)

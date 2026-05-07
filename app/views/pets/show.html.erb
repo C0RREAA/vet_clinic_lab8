@@ -14,6 +14,15 @@
 
 <div class="card shadow-sm mb-4">
   <div class="card-body">
+    <div class="mb-3">
+      <% if @pet.photo.attached? %>
+        <%= image_tag @pet.photo, width: 300, class: "img-fluid rounded" %>
+      <% else %>
+        <div class="text-muted fst-italic border rounded p-4 bg-light text-center" style="max-width: 300px;">
+          No photo available
+        </div>
+      <% end %>
+    </div>
     <p><strong>Species:</strong> <%= @pet.species %></p>
     <p><strong>Breed:</strong> <%= @pet.breed %></p>
     <p><strong>Date of Birth:</strong> <%= @pet.date_of_birth.strftime("%B %d, %Y") %></p>

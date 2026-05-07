@@ -32,37 +32,38 @@
 </div>
 
 <% if @appointment.treatments.any? %>
-  <table class="table table-bordered table-hover align-middle">
-    <thead class="table-dark">
-      <tr>
-        <th>Name</th>
-        <th>Medication</th>
-        <th>Dosage</th>
-        <th>Administered At</th>
-        <th>Notes</th>
-        <th class="text-end">Actions</th>
-      </tr>
-    </thead>
-    <tbody>
-      <% @appointment.treatments.each do |t| %>
-        <tr>
-          <td><%= t.name %></td>
-          <td><%= t.medication %></td>
-          <td><%= t.dosage %></td>
-          <td><%= t.administered_at.strftime("%B %d, %Y %H:%M") %></td>
-          <td><%= t.notes %></td>
-          <td class="text-end">
-            <%= link_to "Edit", edit_appointment_treatment_path(@appointment, t), class: "btn btn-sm btn-outline-secondary" %>
+  <% @appointment.treatments.each do |t| %>
+    <div class="card shadow-sm mb-3">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-start mb-2">
+          <h5 class="card-title m-0"><%= t.name %></h5>
+          <div class="d-flex gap-2">
+            <%= link_to "Edit", edit_appointment_treatment_path(@appointment, t),
+                                class: "btn btn-sm btn-outline-secondary" %>
             <%= button_to "Delete", appointment_treatment_path(@appointment, t),
                           method: :delete,
-                          class: "btn btn-sm btn-outline-danger d-inline",
+                          class: "btn btn-sm btn-outline-danger",
                           form: { class: "d-inline" },
                           data: { turbo_confirm: "Are you sure?" } %>
-          </td>
-        </tr>
-      <% end %>
-    </tbody>
-  </table>
+          </div>
+        </div>
+        <p class="text-muted small mb-2">
+          <strong>Medication:</strong> <%= t.medication.presence || "—" %>
+          &nbsp;·&nbsp;
+          <strong>Dosage:</strong> <%= t.dosage.presence || "—" %>
+          &nbsp;·&nbsp;
+          <strong>Administered:</strong> <%= t.administered_at.strftime("%B %d, %Y %H:%M") %>
+        </p>
+        <% if t.clinical_notes.present? %>
+          <div class="trix-content">
+            <%= t.clinical_notes %>
+          </div>
+        <% else %>
+          <p class="text-muted fst-italic mb-0">No clinical notes recorded.</p>
+        <% end %>
+      </div>
+    </div>
+  <% end %>
 <% else %>
   <p class="text-muted">No treatments recorded for this appointment.</p>
 <% end %>

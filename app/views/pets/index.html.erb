@@ -6,6 +6,7 @@
 <table class="table table-bordered table-hover align-middle">
   <thead class="table-dark">
     <tr>
+      <th>Photo</th>
       <th>Name</th>
       <th>Species</th>
       <th>Breed</th>
@@ -17,6 +18,13 @@
   <tbody>
     <% @pets.each do |pet| %>
       <tr>
+        <td>
+          <% if pet.photo.attached? %>
+            <%= image_tag pet.photo.variant(resize_to_fill: [ 60, 60 ]), class: "rounded" %>
+          <% else %>
+            <span class="text-muted">—</span>
+          <% end %>
+        </td>
         <td><%= link_to pet.name, pet_path(pet) %></td>
         <td><%= pet.species %></td>
         <td><%= pet.breed %></td>
