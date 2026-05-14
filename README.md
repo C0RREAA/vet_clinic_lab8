@@ -56,6 +56,26 @@ bin/rails server
 
 Then open http://localhost:3000.
 
+## Troubleshooting
+
+### PostgreSQL encoding issue (SQL_ASCII clusters)
+
+If `bin/rails db:create` fails with
+
+```
+new encoding (UTF8) is incompatible with the encoding of the template database (SQL_ASCII)
+```
+
+create the databases manually using `template0`:
+
+```bash
+psql -d postgres <<'SQL'
+CREATE DATABASE vet_clinic_development ENCODING 'UTF8' TEMPLATE template0;
+CREATE DATABASE vet_clinic_test        ENCODING 'UTF8' TEMPLATE template0;
+SQL
+bin/rails db:migrate db:seed
+```
+
 ## Running tests
 
 ```bash
