@@ -1,4 +1,5 @@
-# Wipe existing data so this file is idempotent.
+# Wipe non-user data so the rest of this file is idempotent.
+# Users are seeded via find_or_create_by below so they can be re-run safely.
 Treatment.destroy_all
 Appointment.destroy_all
 Pet.destroy_all
@@ -6,6 +7,28 @@ Owner.destroy_all
 Vet.destroy_all
 
 PHOTO_DIR = Rails.root.join("db", "seeds", "pets")
+
+# ── Users (auth) ────────────────────────────────────────
+[
+  { email: "admin@vetclinic.com", first_name: "Admin", last_name: "User",  role: :admin },
+  { email: "vet@vetclinic.com",   first_name: "Jane",  last_name: "Smith", role: :vet },
+  { email: "owner@vetclinic.com", first_name: "John",  last_name: "Doe",   role: :owner }
+].each do |attrs|
+  user = User.find_or_create_by!(email: attrs[:email]) do |u|
+    u.first_name = attrs[:first_name]
+    u.last_name  = attrs[:last_name]
+    u.role       = attrs[:role]
+    u.password   = "password123"
+    u.password_confirmation = "password123"
+  end
+
+  # Keep name/role up to date if the user already existed but with stale data.
+  user.update!(
+    first_name: attrs[:first_name],
+    last_name:  attrs[:last_name],
+    role:       attrs[:role]
+  )
+end
 
 # ── Owners ──────────────────────────────────────────────
 ana = Owner.create!(
@@ -238,3 +261,4 @@ a3.treatments.create!(
 
 puts "✅ Seed completado: #{Owner.count} owners, #{Pet.count} pets, #{Vet.count} vets, #{Appointment.count} appointments, #{Treatment.count} treatments"
 puts "🖼  Photos attached: #{Pet.joins(:photo_attachment).count}/#{Pet.count}"
+puts "👤 Users: #{User.count} (#{User.pluck(:role).tally})"

@@ -12,6 +12,7 @@ for UANDES.
 - Bootstrap 5.3 (via CDN)
 - Active Storage (pet photos, with image variants via libvips)
 - Action Text / Trix (treatment clinical notes)
+- Devise (authentication, with role enum)
 
 ## System dependencies
 
@@ -61,6 +62,31 @@ Then open http://localhost:3000.
 bin/rails test
 ```
 
+## Authentication
+
+Every page except the public landing (the root route, `owners#index`) is
+behind a Devise login. Hitting `/pets`, `/vets`, `/appointments`,
+`/owners/:id` (etc.) while signed out redirects to `/users/sign_in`.
+
+### Seeded credentials
+
+| Email                  | Password      | Role  |
+| ---------------------- | ------------- | ----- |
+| `admin@vetclinic.com`  | `password123` | admin |
+| `vet@vetclinic.com`    | `password123` | vet   |
+| `owner@vetclinic.com`  | `password123` | owner |
+
+Users are created with `find_or_create_by` so `db:seed` can be re-run
+without errors.
+
+### Role is server-controlled
+
+The `role` attribute exists on `User` (enum: `owner` / `vet` / `admin`) but
+is **not** included in the Devise sign-up or account-edit permitted
+parameters. Even if a malicious POST tries to set `user[role]=admin`, Rails'
+strong-parameter filtering drops it before assignment. To promote a user,
+edit the record from `rails console` or update the seed file.
+
 ## Trix sanitization check
 
 Action Text uses Trix and runs incoming HTML through Rails' sanitizer before
@@ -84,3 +110,7 @@ inline event handlers (`onerror=`, `onclick=` …) and `javascript:` URLs.
   partial with `is-invalid` Bootstrap styling.
 - **Lab 7** — Active Storage for pet photos (with size/MIME validation and
   thumbnail variants) and Action Text for rich clinical notes on treatments.
+- **Lab 8** — Devise authentication: protected resource pages, sign-in /
+  sign-up / account-edit views styled to match the rest of the app, a `role`
+  enum that the user-facing forms can't touch, and three seeded accounts
+  (admin, vet, owner) for quick login testing.
